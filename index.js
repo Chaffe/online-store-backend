@@ -1,13 +1,14 @@
 import express from 'express';
 import mongoose from "mongoose";
 import multer from 'multer';
+import cors from 'cors';
 
 import { loginValidation, registerValidation, productCreateValidation } from "./validations/index.js";
 import { checkAuth, handleValidationErrors } from "./utils/index.js";
 import { UserController, ProductController } from './controllers/index.js';
 
 mongoose
-    .connect("mongodb+srv://Chaffe:wwwwww@cluster0.ooqonha.mongodb.net/online-store?retryWrites=true&w=majority")
+    .connect(process.env.MONGODB_URI)
     .then(() => console.log('DB Connected'))
     .catch(() => console.log('DB Error'))
 
@@ -24,6 +25,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+app.use(cors());
 app.use('/uploads', express.static('uploads'))
 
 mongoose.set('strictQuery', true);
@@ -49,7 +51,7 @@ app.delete('/products/:id', checkAuth, ProductController.remove);
 app.patch('/products/:id', checkAuth, ProductController.update)
 
 
-app.listen(4444, (err) => {
+app.listen(process.env.PORT || 4444, (err) => {
     if (err) {
         return console.log(err);
     }

@@ -17,7 +17,7 @@ export const getOne = async (req, res) => {
     try {
         const productId = req.params.id;
 
-        const product = await ProductModel.findOne({ _id: productId });
+        const product = await ProductModel.findOne({ _id: productId }).populate('user').exec();
 
         if (!product) {
             return res.status(404).json({
@@ -35,7 +35,6 @@ export const getOne = async (req, res) => {
 }
 
 export const create = async (req, res) => {
-
     try {
         const product = await ProductModel.create({
             title: req.body.title,
